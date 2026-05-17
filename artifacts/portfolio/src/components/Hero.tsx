@@ -70,23 +70,6 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* Profile photo — mobile only */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="flex lg:hidden mb-6"
-            >
-              <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-lg">
-                <img
-                  src="/yazan.png"
-                  alt="Yazan Mohammad"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
-              </div>
-            </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -183,23 +166,6 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="hidden lg:flex flex-col gap-4"
           >
-            {/* Profile photo */}
-            <div className="flex justify-end">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="relative w-28 h-28 rounded-2xl overflow-hidden border-2 border-primary/40 shadow-xl glow-primary"
-              >
-                <img
-                  src="/yazan.png"
-                  alt="Yazan Mohammad"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent" />
-              </motion.div>
-            </div>
-
             {/* Terminal */}
             <div className="terminal-window">
               <div className="terminal-header">
