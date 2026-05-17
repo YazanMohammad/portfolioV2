@@ -1,25 +1,28 @@
-import Nav from "@/components/Nav";
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Skills from "@/components/Skills";
-import Experience from "@/components/Experience";
-import Projects from "@/components/Projects";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import Portfolio from "@/pages/portfolio";
+import AdminLogin from "@/pages/admin/login";
+import AdminDashboard from "@/pages/admin/dashboard";
+import AdminProjects from "@/pages/admin/projects";
+import AdminSkills from "@/pages/admin/skills";
+import AdminExperience from "@/pages/admin/experience";
+import AdminMessages from "@/pages/admin/messages";
+import NotFound from "@/pages/not-found";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Experience />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <WouterRouter base={base}>
+      <Switch>
+        <Route path="/" component={Portfolio} />
+        <Route path="/admin" component={AdminLogin} />
+        <Route path="/admin/dashboard" component={AdminDashboard} />
+        <Route path="/admin/projects" component={AdminProjects} />
+        <Route path="/admin/skills" component={AdminSkills} />
+        <Route path="/admin/experience" component={AdminExperience} />
+        <Route path="/admin/messages" component={AdminMessages} />
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
   );
 }
