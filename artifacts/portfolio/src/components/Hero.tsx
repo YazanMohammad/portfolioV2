@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Mail, Download, Briefcase } from "lucide-react";
+import { ArrowRight, Github, Mail, Download } from "lucide-react";
 
 const stats = [
   { value: "2+", label: "Years Experience" },
@@ -17,10 +18,29 @@ const codeLines = [
   { tokens: [{ t: "  quickLearner", c: "text-primary" }, { t: ": ", c: "text-muted-foreground" }, { t: "true", c: "text-accent" }, { t: ",", c: "text-foreground" }] },
   { tokens: [{ t: "  hobbies", c: "text-primary" }, { t: ": [", c: "text-foreground" }, { t: '"Coding"', c: "text-yellow-400" }, { t: ", ", c: "text-foreground" }, { t: '"Gaming"', c: "text-yellow-400" }, { t: ", ", c: "text-foreground" }, { t: '"Coffee"', c: "text-yellow-400" }, { t: "],", c: "text-foreground" }] },
   { tokens: [{ t: "}", c: "text-foreground" }] },
-  { tokens: [{ t: "// Ready to build something amazing", c: "text-muted-foreground/60 italic" }, { t: " ▋", c: "text-primary animate-pulse" }] },
+  { tokens: [{ t: "// Ready to build something amazing", c: "text-muted-foreground/50 italic" }, { t: " ▋", c: "text-primary animate-pulse" }] },
 ];
 
+const FULL_TITLE = "Building the Digital Future.";
+
 export default function Hero() {
+  const [typedText, setTypedText] = useState("");
+  const [titleDone, setTitleDone] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index <= FULL_TITLE.length) {
+        setTypedText(FULL_TITLE.slice(0, index));
+        index++;
+      } else {
+        clearInterval(timer);
+        setTitleDone(true);
+      }
+    }, 55);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section
       id="hero"
@@ -29,8 +49,8 @@ export default function Hero() {
     >
       {/* Background */}
       <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
-      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none translate-x-1/3 translate-y-1/3" />
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/3" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl pointer-events-none translate-x-1/3 translate-y-1/3" />
 
       <div className="max-w-6xl mx-auto px-6 py-20 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -41,54 +61,72 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-mono mb-6" data-testid="badge-status">
+              <span
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-mono mb-6"
+                data-testid="badge-status"
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 Open to opportunities
               </span>
             </motion.div>
 
-            <motion.h1
+            {/* Profile photo — mobile only */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="flex lg:hidden mb-6"
+            >
+              <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-lg">
+                <img
+                  src="/yazan.png"
+                  alt="Yazan Mohammad"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              </div>
+            </motion.div>
+
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl lg:text-6xl font-display font-bold leading-tight mb-2"
-              data-testid="hero-name"
             >
-              Yazan
-            </motion.h1>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-5xl lg:text-6xl font-display font-bold leading-tight mb-6"
-            >
-              <span className="text-gradient-primary">Mohammad</span>
-            </motion.h1>
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-tight mb-2 min-h-[1.2em]"
+                data-testid="hero-title"
+              >
+                {typedText}
+                {!titleDone && <span className="text-primary animate-pulse">|</span>}
+              </h1>
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex items-center gap-2 text-lg text-muted-foreground mb-4"
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="text-lg text-muted-foreground mb-2"
             >
-              <Briefcase size={16} className="text-primary shrink-0" />
-              <span>Full-stack Software Engineer</span>
+              <span className="text-foreground font-semibold">Yazan Mohammad</span>
+              {" — "}Full-stack Software Engineer
             </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.45 }}
+              transition={{ duration: 0.5, delay: 0.42 }}
               className="text-muted-foreground leading-relaxed mb-8 max-w-md"
             >
-              Specializing in scalable backend systems and high-performance web applications.
-              Building digital experiences with modern tech stack.
+              Specializing in{" "}
+              <span className="text-foreground font-medium">scalable backend systems</span> and{" "}
+              <span className="text-foreground font-medium">high-performance web applications</span>.
+              Building digital experiences with a modern tech stack.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.55 }}
+              transition={{ duration: 0.5, delay: 0.52 }}
               className="flex flex-wrap gap-3 mb-10"
             >
               <button
@@ -125,8 +163,8 @@ export default function Hero() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.65 }}
-              className="grid grid-cols-4 gap-4"
+              transition={{ duration: 0.5, delay: 0.62 }}
+              className="grid grid-cols-4 gap-4 max-w-sm"
               data-testid="hero-stats"
             >
               {stats.map((s) => (
@@ -138,13 +176,31 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right — Terminal */}
+          {/* Right */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="hidden lg:block"
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="hidden lg:flex flex-col gap-4"
           >
+            {/* Profile photo */}
+            <div className="flex justify-end">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="relative w-28 h-28 rounded-2xl overflow-hidden border-2 border-primary/40 shadow-xl glow-primary"
+              >
+                <img
+                  src="/yazan.png"
+                  alt="Yazan Mohammad"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent" />
+              </motion.div>
+            </div>
+
+            {/* Terminal */}
             <div className="terminal-window">
               <div className="terminal-header">
                 <span className="terminal-dot bg-red-500/80" />
@@ -158,7 +214,7 @@ export default function Hero() {
                     key={i}
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + i * 0.06 }}
+                    transition={{ delay: 0.8 + i * 0.07 }}
                     className="flex"
                   >
                     <span className="w-8 text-muted-foreground/30 text-right shrink-0 select-none mr-4 text-xs leading-7">
@@ -174,8 +230,8 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Floating social links */}
-            <div className="flex gap-3 mt-4 justify-end">
+            {/* Social links */}
+            <div className="flex gap-3 justify-end">
               <a
                 href="https://github.com/YazanMohammad"
                 target="_blank"

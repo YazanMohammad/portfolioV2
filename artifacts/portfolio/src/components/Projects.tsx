@@ -1,37 +1,41 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { ExternalLink, Github, Star } from "lucide-react";
+import { ExternalLink, Github, Star, Layers } from "lucide-react";
 
 const projects = [
   {
     title: "Portfolio",
     description:
-      "Personal portfolio built with Next.js 16, TypeScript, and Tailwind CSS. Features a custom admin dashboard to manage projects, skills, experience, blog posts, and more — all backed by PostgreSQL via Supabase. Includes GitHub integration, dynamic CV upload, dark/light mode, and bilingual support.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL", "Supabase"],
+      "Personal portfolio built with Next.js 16, TypeScript, and Tailwind CSS. Features a custom admin dashboard to manage projects, skills, experience, blog posts, and more — all backed by PostgreSQL via Supabase. Includes GitHub integration, dynamic CV upload, dark/light mode, and bilingual (AR/EN) support.",
+    tags: ["Next.js 16", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL", "Supabase", "NextAuth"],
     live: "https://www.yznmoh.com/",
+    code: "https://github.com/YazanMohammad/portfolio",
     featured: true,
-    color: "from-cyan-500/10 to-teal-500/10",
-    accent: "#2dd4bf",
+    accentClass: "from-cyan-500/10 to-teal-500/10",
+    borderHover: "hover:border-cyan-500/40",
+    dotColor: "bg-cyan-400",
   },
   {
     title: "Chat App",
     description:
-      "Real-time chat application with React frontend and ASP.NET Core backend. Integrated SignalR for low-latency, bidirectional communication. Optimized state management for smooth multi-user experience.",
+      "Full-stack real-time chat application. React frontend paired with an ASP.NET Core backend and SignalR for low-latency bidirectional communication. Optimized state management for smooth multi-user experience.",
     tags: ["React.JS", "ASP.NET Core", "SignalR", "C#"],
     live: "https://chat-app-by-me.vercel.app/",
     code: "https://github.com/YazanMohammad/ChatApp",
     featured: true,
-    color: "from-violet-500/10 to-purple-500/10",
-    accent: "#a78bfa",
+    accentClass: "from-violet-500/10 to-purple-500/10",
+    borderHover: "hover:border-violet-500/40",
+    dotColor: "bg-violet-400",
   },
   {
     title: "Tic-Tac-Toe",
     description:
-      "Interactive Tic-Tac-Toe game with clean state management, win detection logic, and a fully responsive UI. A deceptively simple project built with care.",
+      "Interactive Tic-Tac-Toe game with clean state management, win detection logic, and a fully responsive UI. A deceptively simple project built with care and attention to detail.",
     tags: ["React.JS", "State Management"],
     featured: false,
-    color: "from-emerald-500/10 to-green-500/10",
-    accent: "#34d399",
+    accentClass: "from-emerald-500/10 to-green-500/10",
+    borderHover: "hover:border-emerald-500/40",
+    dotColor: "bg-emerald-400",
   },
 ];
 
@@ -63,18 +67,25 @@ export default function Projects() {
               initial={{ opacity: 0, y: 24 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, delay: i * 0.1 }}
-              className="group relative p-6 rounded-xl border border-border bg-card hover:border-primary/40 transition-all hover:-translate-y-1"
+              className={`group relative p-6 rounded-xl border border-border bg-card transition-all hover:-translate-y-1.5 ${project.borderHover}`}
               data-testid={`project-${project.title.toLowerCase().replace(/\s+/g, "-")}`}
             >
-              {/* Gradient bg */}
-              <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+              {/* Gradient bg on hover */}
+              <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${project.accentClass} opacity-0 group-hover:opacity-100 transition-opacity`} />
 
               <div className="relative">
-                {project.featured && (
-                  <div className="flex items-center gap-1 text-xs font-mono text-yellow-400 mb-3">
-                    <Star size={10} fill="currentColor" /> Featured
-                  </div>
-                )}
+                <div className="flex items-start justify-between mb-3">
+                  {project.featured ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-mono text-yellow-400">
+                      <Star size={10} fill="currentColor" /> Featured
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground">
+                      <Layers size={10} /> Project
+                    </span>
+                  )}
+                  <span className={`w-2 h-2 rounded-full ${project.dotColor} opacity-70`} />
+                </div>
 
                 <h3 className="text-lg font-display font-bold text-foreground mb-3">{project.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-5">{project.description}</p>
@@ -90,7 +101,7 @@ export default function Projects() {
                   ))}
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   {project.live && (
                     <a
                       href={project.live}
