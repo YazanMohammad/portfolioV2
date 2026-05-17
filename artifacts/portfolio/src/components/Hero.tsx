@@ -212,9 +212,9 @@ export default function Hero() {
                 {codeLines.map((line, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, x: -8 }}
+                    initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + i * 0.07 }}
+                    transition={{ duration: 0.25, delay: i * 0.04 }}
                     className="flex"
                   >
                     <span className="w-8 text-muted-foreground/30 text-right shrink-0 select-none mr-4 text-xs leading-7">
