@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, X, Save, GripVertical } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import Portal from "@/components/admin/Portal";
 import { store, type Skill } from "@/lib/admin-store";
 
 function uid() { return Math.random().toString(36).slice(2); }
@@ -91,35 +92,37 @@ export default function AdminSkills() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {modal && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModal(false)} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto bg-card border border-border rounded-2xl shadow-2xl z-50">
-              <div className="flex items-center justify-between p-5 border-b border-border">
-                <h2 className="font-display font-bold text-foreground">Add Skill</h2>
-                <button onClick={() => setModal(false)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
-              </div>
-              <form onSubmit={handleAdd} className="p-5 space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">Skill Name</label>
-                  <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Next.js" className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all" />
+      <Portal>
+        <AnimatePresence>
+          {modal && (
+            <>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModal(false)} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]" />
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto bg-card border border-border rounded-2xl shadow-2xl z-[101]">
+                <div className="flex items-center justify-between p-5 border-b border-border">
+                  <h2 className="font-display font-bold text-foreground">Add Skill</h2>
+                  <button onClick={() => setModal(false)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">Category</label>
-                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 transition-all">
-                    {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div className="flex gap-3 pt-1">
-                  <button type="button" onClick={() => setModal(false)} className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground transition-all">Cancel</button>
-                  <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"><Save size={14} /> Add</button>
-                </div>
-              </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                <form onSubmit={handleAdd} className="p-5 space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">Skill Name</label>
+                    <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Next.js" className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">Category</label>
+                    <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 transition-all">
+                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div className="flex gap-3 pt-1">
+                    <button type="button" onClick={() => setModal(false)} className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground transition-all">Cancel</button>
+                    <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"><Save size={14} /> Add</button>
+                  </div>
+                </form>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </Portal>
     </AdminLayout>
   );
 }

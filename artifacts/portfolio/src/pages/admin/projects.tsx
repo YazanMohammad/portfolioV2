@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, Star, Eye, EyeOff, ExternalLink, Github, X, Save } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import Portal from "@/components/admin/Portal";
 import { store, type Project } from "@/lib/admin-store";
 
 function uid() { return Math.random().toString(36).slice(2); }
@@ -97,41 +98,42 @@ export default function AdminProjects() {
         </div>
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {modal && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModal(null)} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-lg mx-auto bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
-              <div className="flex items-center justify-between p-5 border-b border-border">
-                <h2 className="font-display font-bold text-foreground">{modal === "add" ? "Add Project" : "Edit Project"}</h2>
-                <button onClick={() => setModal(null)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
-              </div>
-              <form onSubmit={handleSubmit} className="p-5 space-y-4">
-                <Field label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
-                <Field label="Description" value={form.description} onChange={(v) => setForm({ ...form, description: v })} textarea required />
-                <Field label="Tags (comma-separated)" value={form.tags} onChange={(v) => setForm({ ...form, tags: v })} placeholder="React, TypeScript, ..." required />
-                <Field label="Live URL" value={form.live || ""} onChange={(v) => setForm({ ...form, live: v })} placeholder="https://..." />
-                <Field label="Code URL" value={form.code || ""} onChange={(v) => setForm({ ...form, code: v })} placeholder="https://github.com/..." />
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-primary" />
-                    <span className="text-sm text-foreground">Featured</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" checked={form.visible} onChange={(e) => setForm({ ...form, visible: e.target.checked })} className="w-4 h-4 accent-primary" />
-                    <span className="text-sm text-foreground">Visible</span>
-                  </label>
+      <Portal>
+        <AnimatePresence>
+          {modal && (
+            <>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModal(null)} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]" />
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-lg mx-auto bg-card border border-border rounded-2xl shadow-2xl z-[101] overflow-y-auto max-h-[90vh]">
+                <div className="flex items-center justify-between p-5 border-b border-border">
+                  <h2 className="font-display font-bold text-foreground">{modal === "add" ? "Add Project" : "Edit Project"}</h2>
+                  <button onClick={() => setModal(null)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
                 </div>
-                <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => setModal(null)} className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all">Cancel</button>
-                  <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"><Save size={14} /> Save</button>
-                </div>
-              </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                  <Field label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
+                  <Field label="Description" value={form.description} onChange={(v) => setForm({ ...form, description: v })} textarea required />
+                  <Field label="Tags (comma-separated)" value={form.tags} onChange={(v) => setForm({ ...form, tags: v })} placeholder="React, TypeScript, ..." required />
+                  <Field label="Live URL" value={form.live || ""} onChange={(v) => setForm({ ...form, live: v })} placeholder="https://..." />
+                  <Field label="Code URL" value={form.code || ""} onChange={(v) => setForm({ ...form, code: v })} placeholder="https://github.com/..." />
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-primary" />
+                      <span className="text-sm text-foreground">Featured</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input type="checkbox" checked={form.visible} onChange={(e) => setForm({ ...form, visible: e.target.checked })} className="w-4 h-4 accent-primary" />
+                      <span className="text-sm text-foreground">Visible</span>
+                    </label>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button type="button" onClick={() => setModal(null)} className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all">Cancel</button>
+                    <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"><Save size={14} /> Save</button>
+                  </div>
+                </form>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </Portal>
     </AdminLayout>
   );
 }

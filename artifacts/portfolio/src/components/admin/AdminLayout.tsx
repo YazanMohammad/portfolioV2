@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [setLocation]);
 
   return (
-    <div className="min-h-screen bg-background flex overflow-hidden">
+    <div className="min-h-screen bg-background flex">
       {/* ── Desktop sidebar (flex child, sticky) ── */}
       <aside className="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 border-r border-border bg-card/50 sticky top-0 h-screen overflow-hidden">
         <SidebarContent />

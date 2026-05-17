@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, X, Save, Briefcase, GraduationCap } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import Portal from "@/components/admin/Portal";
 import { store, type ExperienceItem } from "@/lib/admin-store";
 
 function uid() { return Math.random().toString(36).slice(2); }
@@ -31,7 +32,9 @@ export default function AdminExperience() {
     setModal(null);
   };
 
-  const remove = (id: string) => { if (confirm("Delete this item?")) save(items.filter((i) => i.id !== id)); };
+  const remove = (id: string) => {
+    if (confirm("Delete this item?")) save(items.filter((i) => i.id !== id));
+  };
 
   return (
     <AdminLayout>
@@ -41,7 +44,11 @@ export default function AdminExperience() {
             <h1 className="text-2xl font-display font-bold text-foreground">Experience</h1>
             <p className="text-sm text-muted-foreground mt-1">Work history and education</p>
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors" data-testid="button-add-experience">
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+            data-testid="button-add-experience"
+          >
             <Plus size={15} /> Add Entry
           </button>
         </div>
@@ -80,60 +87,111 @@ export default function AdminExperience() {
                 )}
               </div>
               <div className="flex items-start gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => openEdit(item)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><Pencil size={14} /></button>
-                <button onClick={() => remove(item.id)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"><Trash2 size={14} /></button>
+                <button onClick={() => openEdit(item)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all">
+                  <Pencil size={14} />
+                </button>
+                <button onClick={() => remove(item.id)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all">
+                  <Trash2 size={14} />
+                </button>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      <AnimatePresence>
-        {modal && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModal(null)} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-lg mx-auto bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
-              <div className="flex items-center justify-between p-5 border-b border-border">
-                <h2 className="font-display font-bold text-foreground">{modal === "add" ? "Add Entry" : "Edit Entry"}</h2>
-                <button onClick={() => setModal(null)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
-              </div>
-              <form onSubmit={handleSubmit} className="p-5 space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">Type</label>
-                  <div className="flex gap-3">
-                    {(["work", "education"] as const).map((t) => (
-                      <label key={t} className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${form.type === t ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground/30"}`}>
-                        <input type="radio" name="type" value={t} checked={form.type === t} onChange={() => setForm({ ...form, type: t })} className="hidden" />
-                        {t === "work" ? <Briefcase size={14} /> : <GraduationCap size={14} />}
-                        <span className="text-sm capitalize">{t}</span>
-                      </label>
-                    ))}
+      <Portal>
+        <AnimatePresence>
+          {modal && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setModal(null)}
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-lg mx-auto bg-card border border-border rounded-2xl shadow-2xl z-[101] overflow-y-auto max-h-[90vh]"
+              >
+                <div className="flex items-center justify-between p-5 border-b border-border">
+                  <h2 className="font-display font-bold text-foreground">{modal === "add" ? "Add Entry" : "Edit Entry"}</h2>
+                  <button onClick={() => setModal(null)} className="text-muted-foreground hover:text-foreground">
+                    <X size={18} />
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">Type</label>
+                    <div className="flex gap-3">
+                      {(["work", "education"] as const).map((t) => (
+                        <label
+                          key={t}
+                          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border cursor-pointer transition-all
+                            ${form.type === t ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground/30"}`}
+                        >
+                          <input type="radio" name="type" value={t} checked={form.type === t} onChange={() => setForm({ ...form, type: t })} className="hidden" />
+                          {t === "work" ? <Briefcase size={14} /> : <GraduationCap size={14} />}
+                          <span className="text-sm capitalize">{t}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {[
-                  { key: "role", label: form.type === "work" ? "Position" : "Degree", placeholder: form.type === "work" ? "Software Engineer" : "B.S. Computer Science" },
-                  { key: "org", label: form.type === "work" ? "Company" : "School", placeholder: form.type === "work" ? "Company name" : "University name" },
-                  { key: "period", label: "Period", placeholder: "Sep 2024 – Jan 2025" },
-                  { key: "tags", label: "Tags (comma-separated)", placeholder: "React, Node.js, ..." },
-                ].map(({ key, label, placeholder }) => (
-                  <div key={key}>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
-                    <input type="text" value={(form as Record<string, string>)[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} required={["role", "org", "period"].includes(key)} className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/50" />
+
+                  {[
+                    { key: "role", label: form.type === "work" ? "Position" : "Degree", placeholder: form.type === "work" ? "Software Engineer" : "B.S. Computer Science" },
+                    { key: "org", label: form.type === "work" ? "Company" : "School", placeholder: form.type === "work" ? "Company name" : "University name" },
+                    { key: "period", label: "Period", placeholder: "Sep 2024 – Jan 2025" },
+                    { key: "tags", label: "Tags (comma-separated)", placeholder: "React, Node.js, ..." },
+                  ].map(({ key, label, placeholder }) => (
+                    <div key={key}>
+                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
+                      <input
+                        type="text"
+                        value={(form as Record<string, string>)[key]}
+                        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                        placeholder={placeholder}
+                        required={["role", "org", "period"].includes(key)}
+                        className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/50"
+                      />
+                    </div>
+                  ))}
+
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">Description</label>
+                    <textarea
+                      value={form.description}
+                      onChange={(e) => setForm({ ...form, description: e.target.value })}
+                      required
+                      rows={4}
+                      placeholder="Describe your role and responsibilities..."
+                      className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all resize-none placeholder:text-muted-foreground/50"
+                    />
                   </div>
-                ))}
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">Description</label>
-                  <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required rows={4} placeholder="Describe your role and responsibilities..." className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all resize-none placeholder:text-muted-foreground/50" />
-                </div>
-                <div className="flex gap-3 pt-1">
-                  <button type="button" onClick={() => setModal(null)} className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground transition-all">Cancel</button>
-                  <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"><Save size={14} /> Save</button>
-                </div>
-              </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setModal(null)}
+                      className="flex-1 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                    >
+                      <Save size={14} /> Save
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </Portal>
     </AdminLayout>
   );
 }

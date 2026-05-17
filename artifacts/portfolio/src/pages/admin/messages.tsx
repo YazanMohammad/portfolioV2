@@ -51,13 +51,16 @@ export default function AdminMessages() {
               </div>
             )}
             {messages.map((m, i) => (
-              <motion.button
+              <motion.div
                 key={m.id}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => open(m)}
-                className={`w-full text-left p-4 rounded-xl border transition-all group ${
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && open(m)}
+                className={`w-full text-left p-4 rounded-xl border transition-all group cursor-pointer ${
                   selected?.id === m.id
                     ? "border-primary bg-primary/10"
                     : m.read
@@ -88,7 +91,7 @@ export default function AdminMessages() {
                 </div>
                 {m.subject && <p className="text-xs text-muted-foreground truncate mb-1">{m.subject}</p>}
                 <p className="text-xs text-muted-foreground/70 line-clamp-1">{m.message}</p>
-              </motion.button>
+              </motion.div>
             ))}
           </div>
 
