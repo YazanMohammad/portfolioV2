@@ -6,8 +6,8 @@ import Portal from "@/components/admin/Portal";
 import { store, type Project } from "@/lib/admin-store";
 
 function uid() { return Math.random().toString(36).slice(2); }
-
-const EMPTY: Omit<Project, "id"> = { title: "", description: "", tags: "", live: "", code: "", featured: false, visible: true };
+const CATEGORIES = ["Full Stack", "Web Development", "Mobile", "API", "Tool", "Other"];
+const EMPTY: Omit<Project, "id"> = { title: "", description: "", imageUrl: "", technologies: "", liveUrl: "", githubUrl: "", category: "Full Stack", featured: false, isVisible: true, order: 0 };
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -18,8 +18,7 @@ export default function AdminProjects() {
   useEffect(() => { setProjects(store.getProjects()); }, []);
 
   const save = (data: Project[]) => { setProjects(data); store.saveProjects(data); };
-
-  const openAdd = () => { setForm(EMPTY); setEditing(null); setModal("add"); };
+  const openAdd = () => { setForm({ ...EMPTY, order: projects.length + 1 }); setEditing(null); setModal("add"); };
   const openEdit = (p: Project) => { setForm(p); setEditing(p); setModal("edit"); };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,7 +32,7 @@ export default function AdminProjects() {
   };
 
   const remove = (id: string) => { if (confirm("Delete this project?")) save(projects.filter((p) => p.id !== id)); };
-  const toggle = (id: string, key: "featured" | "visible") => {
+  const toggle = (id: string, key: "featured" | "isVisible") => {
     save(projects.map((p) => p.id === id ? { ...p, [key]: !p[key] } : p));
   };
 
@@ -45,53 +44,40 @@ export default function AdminProjects() {
             <h1 className="text-2xl font-display font-bold text-foreground">Projects</h1>
             <p className="text-sm text-muted-foreground mt-1">{projects.length} projects total</p>
           </div>
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-            data-testid="button-add-project"
-          >
+          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors">
             <Plus size={15} /> Add Project
           </button>
         </div>
 
         <div className="space-y-3">
           {projects.map((p, i) => (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/20 transition-all group"
-              data-testid={`project-row-${p.id}`}
-            >
+            <motion.div key={p.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/20 transition-all group">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <h3 className="font-semibold text-foreground text-sm">{p.title}</h3>
+                  <span className="px-1.5 py-0.5 rounded text-xs border border-border bg-muted/50 text-muted-foreground font-mono">{p.category}</span>
                   {p.featured && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"><Star size={9} fill="currentColor" /> Featured</span>}
-                  {!p.visible && <span className="px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground border border-border">Hidden</span>}
+                  {!p.isVisible && <span className="px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground border border-border">Hidden</span>}
                 </div>
                 <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{p.description}</p>
                 <div className="flex flex-wrap gap-1">
-                  {p.tags.split(",").map((t) => (
+                  {p.technologies.split(",").filter(Boolean).map((t) => (
                     <span key={t} className="px-2 py-0.5 rounded text-xs font-mono border border-border bg-muted/50 text-muted-foreground">{t.trim()}</span>
                   ))}
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><ExternalLink size={14} /></a>}
-                {p.code && <a href={p.code} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all"><Github size={14} /></a>}
-                <button onClick={() => toggle(p.id, "visible")} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all" title={p.visible ? "Hide" : "Show"}>
-                  {p.visible ? <Eye size={14} /> : <EyeOff size={14} />}
+                {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><ExternalLink size={14} /></a>}
+                {p.githubUrl && <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all"><Github size={14} /></a>}
+                <button onClick={() => toggle(p.id, "isVisible")} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all" title={p.isVisible ? "Hide" : "Show"}>
+                  {p.isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
                 </button>
-                <button onClick={() => toggle(p.id, "featured")} className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${p.featured ? "text-yellow-400 bg-yellow-400/10" : "text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10"}`} title="Toggle featured">
+                <button onClick={() => toggle(p.id, "featured")} className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${p.featured ? "text-yellow-400 bg-yellow-400/10" : "text-muted-foreground hover:text-yellow-400 hover:bg-yellow-400/10"}`}>
                   <Star size={14} fill={p.featured ? "currentColor" : "none"} />
                 </button>
-                <button onClick={() => openEdit(p)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all">
-                  <Pencil size={14} />
-                </button>
-                <button onClick={() => remove(p.id)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all">
-                  <Trash2 size={14} />
-                </button>
+                <button onClick={() => openEdit(p)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"><Pencil size={14} /></button>
+                <button onClick={() => remove(p.id)} className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"><Trash2 size={14} /></button>
               </div>
             </motion.div>
           ))}
@@ -111,16 +97,23 @@ export default function AdminProjects() {
                 <form onSubmit={handleSubmit} className="p-5 space-y-4">
                   <Field label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
                   <Field label="Description" value={form.description} onChange={(v) => setForm({ ...form, description: v })} textarea required />
-                  <Field label="Tags (comma-separated)" value={form.tags} onChange={(v) => setForm({ ...form, tags: v })} placeholder="React, TypeScript, ..." required />
-                  <Field label="Live URL" value={form.live || ""} onChange={(v) => setForm({ ...form, live: v })} placeholder="https://..." />
-                  <Field label="Code URL" value={form.code || ""} onChange={(v) => setForm({ ...form, code: v })} placeholder="https://github.com/..." />
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">Category</label>
+                    <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary/60 transition-all">
+                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <Field label="Technologies (comma-separated)" value={form.technologies} onChange={(v) => setForm({ ...form, technologies: v })} placeholder="React.JS, TypeScript, ..." required />
+                  <Field label="Live URL" value={form.liveUrl || ""} onChange={(v) => setForm({ ...form, liveUrl: v })} placeholder="https://..." />
+                  <Field label="GitHub URL" value={form.githubUrl || ""} onChange={(v) => setForm({ ...form, githubUrl: v })} placeholder="https://github.com/..." />
+                  <Field label="Image URL" value={form.imageUrl || ""} onChange={(v) => setForm({ ...form, imageUrl: v })} placeholder="https://..." />
                   <div className="flex gap-4">
                     <label className="flex items-center gap-2 cursor-pointer select-none">
                       <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-primary" />
                       <span className="text-sm text-foreground">Featured</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer select-none">
-                      <input type="checkbox" checked={form.visible} onChange={(e) => setForm({ ...form, visible: e.target.checked })} className="w-4 h-4 accent-primary" />
+                      <input type="checkbox" checked={form.isVisible} onChange={(e) => setForm({ ...form, isVisible: e.target.checked })} className="w-4 h-4 accent-primary" />
                       <span className="text-sm text-foreground">Visible</span>
                     </label>
                   </div>

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { 
   SiTypescript, SiJavascript, SiPython, SiCplusplus, 
-  SiPhp, SiReact, SiDotnet, SiCsharp, SiGit, 
+  SiPhp, SiReact, SiDotnet, SiGit, 
   SiPostgresql, SiSupabase, SiPrisma, SiNextdotjs
 } from "react-icons/si";
 import { Terminal, Database, Code2, Globe } from "lucide-react";
@@ -12,7 +12,7 @@ const skills = [
     { name: "JavaScript", icon: <SiJavascript /> },
     { name: "Python", icon: <SiPython /> },
     { name: "C++", icon: <SiCplusplus /> },
-    { name: "C#", icon: <SiCsharp /> },
+    { name: "C#", icon: <Code2 /> },
     { name: "PHP", icon: <SiPhp /> },
     { name: "Java", icon: <Code2 /> },
     { name: "C", icon: <Code2 /> },

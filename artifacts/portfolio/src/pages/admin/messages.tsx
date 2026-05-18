@@ -2,19 +2,19 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, MailOpen, Trash2, X, Reply, Clock } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { store, type Message } from "@/lib/admin-store";
+import { store, type ContactMessage } from "@/lib/admin-store";
 
 export default function AdminMessages() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [selected, setSelected] = useState<Message | null>(null);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [selected, setSelected] = useState<ContactMessage | null>(null);
 
   useEffect(() => { setMessages(store.getMessages()); }, []);
 
-  const save = (data: Message[]) => { setMessages(data); store.saveMessages(data); };
+  const save = (data: ContactMessage[]) => { setMessages(data); store.saveMessages(data); };
 
-  const open = (m: Message) => {
+  const open = (m: ContactMessage) => {
     setSelected(m);
-    if (!m.read) save(messages.map((msg) => msg.id === m.id ? { ...msg, read: true } : msg));
+    if (!m.isRead) save(messages.map((msg) => msg.id === m.id ? { ...msg, isRead: true } : msg));
   };
 
   const remove = (id: string) => {
@@ -24,7 +24,7 @@ export default function AdminMessages() {
     }
   };
 
-  const unread = messages.filter((m) => !m.read).length;
+  const unread = messages.filter((m) => !m.isRead).length;
 
   return (
     <AdminLayout>
@@ -63,24 +63,23 @@ export default function AdminMessages() {
                 className={`w-full text-left p-4 rounded-xl border transition-all group cursor-pointer ${
                   selected?.id === m.id
                     ? "border-primary bg-primary/10"
-                    : m.read
+                    : m.isRead
                     ? "border-border bg-card hover:border-primary/20"
                     : "border-primary/30 bg-primary/5 hover:border-primary/50"
                 }`}
-                data-testid={`message-row-${m.id}`}
               >
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <div className="flex items-center gap-2 min-w-0">
-                    {m.read
+                    {m.isRead
                       ? <MailOpen size={13} className="text-muted-foreground shrink-0" />
                       : <Mail size={13} className="text-primary shrink-0" />
                     }
-                    <span className={`text-sm truncate ${m.read ? "font-medium text-foreground" : "font-semibold text-foreground"}`}>
+                    <span className={`text-sm truncate ${m.isRead ? "font-medium text-foreground" : "font-semibold text-foreground"}`}>
                       {m.name}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
-                    <span className="text-xs font-mono text-muted-foreground">{m.date}</span>
+                    <span className="text-xs font-mono text-muted-foreground">{m.createdAt}</span>
                     <button
                       onClick={(e) => { e.stopPropagation(); remove(m.id); }}
                       className="w-5 h-5 flex items-center justify-center rounded text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive transition-all"
@@ -99,13 +98,7 @@ export default function AdminMessages() {
           <div className="lg:col-span-3">
             <AnimatePresence mode="wait">
               {selected ? (
-                <motion.div
-                  key={selected.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  className="h-full rounded-xl border border-border bg-card"
-                >
+                <motion.div key={selected.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="h-full rounded-xl border border-border bg-card">
                   <div className="flex items-start justify-between p-5 border-b border-border">
                     <div>
                       <h2 className="font-display font-bold text-foreground">{selected.subject || "(no subject)"}</h2>
@@ -115,7 +108,7 @@ export default function AdminMessages() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono"><Clock size={11} />{selected.date}</span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono"><Clock size={11} />{selected.createdAt}</span>
                       <button onClick={() => setSelected(null)} className="ml-2 text-muted-foreground hover:text-foreground"><X size={16} /></button>
                     </div>
                   </div>
@@ -123,26 +116,19 @@ export default function AdminMessages() {
                     <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{selected.message}</p>
                   </div>
                   <div className="px-5 pb-5 flex gap-3">
-                    <a
-                      href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-                    >
+                    <a href={`mailto:${selected.email}?subject=Re: ${selected.subject || ""}`}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors">
                       <Reply size={14} /> Reply
                     </a>
-                    <button
-                      onClick={() => remove(selected.id)}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-destructive hover:border-destructive/30 hover:bg-destructive/5 transition-all"
-                    >
+                    <button onClick={() => remove(selected.id)}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-destructive hover:border-destructive/30 hover:bg-destructive/5 transition-all">
                       <Trash2 size={14} /> Delete
                     </button>
                   </div>
                 </motion.div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="h-full min-h-64 rounded-xl border border-border bg-card/50 flex flex-col items-center justify-center gap-2 text-center p-8"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="h-full min-h-64 rounded-xl border border-border bg-card/50 flex flex-col items-center justify-center gap-2 text-center p-8">
                   <MailOpen size={32} className="text-muted-foreground/30 mb-2" />
                   <p className="text-sm font-medium text-muted-foreground">Select a message to read</p>
                   <p className="text-xs text-muted-foreground/60">Click any message on the left</p>

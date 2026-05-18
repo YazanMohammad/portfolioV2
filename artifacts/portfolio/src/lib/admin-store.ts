@@ -2,11 +2,14 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  tags: string;
-  live?: string;
-  code?: string;
+  imageUrl?: string;
+  technologies: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  category: string;
   featured: boolean;
-  visible: boolean;
+  isVisible: boolean;
+  order: number;
 }
 
 export interface Skill {
@@ -14,79 +17,149 @@ export interface Skill {
   name: string;
   category: string;
   order: number;
+  showInHero: boolean;
 }
 
-export interface ExperienceItem {
+export interface Experience {
   id: string;
-  type: "work" | "education";
-  role: string;
-  org: string;
-  period: string;
+  position: string;
+  company: string;
+  logoUrl?: string;
+  startDate: string;
+  endDate?: string;
   description: string;
-  tags: string;
+  current: boolean;
 }
 
-export interface Message {
+export interface Education {
+  id: string;
+  degree: string;
+  school: string;
+  logoUrl?: string;
+  startDate: string;
+  endDate?: string;
+  description: string;
+}
+
+export interface ContactMessage {
   id: string;
   name: string;
   email: string;
-  subject: string;
+  subject?: string;
   message: string;
-  date: string;
-  read: boolean;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  position: string;
+  company: string;
+  imageUrl?: string;
+  content: string;
+  rating: number;
+  linkedinUrl?: string;
+  featured: boolean;
+  order: number;
+  isVisible: boolean;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage?: string;
+  category: string;
+  tags: string;
+  readTime: number;
+  published: boolean;
+  featured: boolean;
+  externalUrl?: string;
+  publishedAt: string;
+}
+
+export interface SiteStats {
+  yearsExperience: number;
+  projectsCompleted: number;
+  technologiesMastered: number;
+  githubContributions: number;
+}
+
+export interface AvailabilityStatus {
+  isAvailable: boolean;
+  status: string;
+  message?: string;
 }
 
 const DEFAULTS = {
   projects: [
-    { id: "1", title: "Portfolio", description: "Personal portfolio built with Next.js 16, TypeScript, and Tailwind CSS. Custom admin dashboard backed by PostgreSQL via Supabase. GitHub integration, dynamic CV upload, dark/light mode, bilingual support.", tags: "Next.js 16, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Supabase", live: "https://www.yznmoh.com/", code: "https://github.com/YazanMohammad/portfolio", featured: true, visible: true },
-    { id: "2", title: "Chat App", description: "Full-stack real-time chat application. React frontend with ASP.NET Core backend and SignalR for low-latency bidirectional communication.", tags: "React.JS, ASP.NET Core, SignalR, C#", live: "https://chat-app-by-me.vercel.app/", code: "https://github.com/YazanMohammad/ChatApp", featured: true, visible: true },
-    { id: "3", title: "Tic-Tac-Toe", description: "Interactive Tic-Tac-Toe game with clean state management, win detection logic, and a fully responsive UI.", tags: "React.JS, State Management", featured: false, visible: true },
+    { id: "1", title: "Portfolio", description: "Personal portfolio built with Next.js 16, TypeScript, and Tailwind CSS. Custom admin dashboard backed by PostgreSQL via Supabase. GitHub integration, dynamic CV upload, dark/light mode, bilingual support.", imageUrl: "/preview-portfolio.png", technologies: "Next.js 16, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Supabase", liveUrl: "https://www.yznmoh.com/", githubUrl: "https://github.com/YazanMohammad/portfolio", category: "Full Stack", featured: true, isVisible: true, order: 1 },
+    { id: "2", title: "Chat App", description: "Full-stack real-time chat application. React frontend with ASP.NET Core backend and SignalR for low-latency bidirectional communication.", imageUrl: "/preview-chat.png", technologies: "React.JS, ASP.NET Core, SignalR, C#", liveUrl: "https://chat-app-by-me.vercel.app/", githubUrl: "https://github.com/YazanMohammad/ChatApp", category: "Full Stack", featured: true, isVisible: true, order: 2 },
+    { id: "3", title: "Tic-Tac-Toe", description: "Developed an interactive Tic-Tac-Toe game with clean state management, win detection logic, and a fully responsive UI.", imageUrl: "/preview-ttt.png", technologies: "React.JS, State Management", category: "Web Development", featured: false, isVisible: true, order: 3 },
   ] as Project[],
   skills: [
-    { id: "1", name: "TypeScript", category: "Languages", order: 1 },
-    { id: "2", name: "JavaScript", category: "Languages", order: 2 },
-    { id: "3", name: "Python", category: "Languages", order: 3 },
-    { id: "4", name: "Java", category: "Languages", order: 4 },
-    { id: "5", name: "C#", category: "Languages", order: 5 },
-    { id: "6", name: "C++", category: "Languages", order: 6 },
-    { id: "7", name: "C", category: "Languages", order: 7 },
-    { id: "8", name: "PHP", category: "Languages", order: 8 },
-    { id: "9", name: "SQL", category: "Languages", order: 9 },
-    { id: "10", name: "React.js", category: "Frameworks", order: 10 },
-    { id: "11", name: "ASP.NET Core", category: "Frameworks", order: 11 },
-    { id: "12", name: "Git", category: "Tools", order: 12 },
-    { id: "13", name: "EF Core", category: "Tools", order: 13 },
-    { id: "14", name: "LLMs / AI", category: "Tools", order: 14 },
+    { id: "1", name: "TypeScript", category: "Languages", order: 1, showInHero: true },
+    { id: "2", name: "JavaScript", category: "Languages", order: 2, showInHero: true },
+    { id: "3", name: "Python", category: "Languages", order: 3, showInHero: false },
+    { id: "4", name: "Java", category: "Languages", order: 4, showInHero: false },
+    { id: "5", name: "C#", category: "Languages", order: 5, showInHero: false },
+    { id: "6", name: "C++", category: "Languages", order: 6, showInHero: false },
+    { id: "7", name: "C", category: "Languages", order: 7, showInHero: false },
+    { id: "8", name: "PHP", category: "Languages", order: 8, showInHero: false },
+    { id: "9", name: "SQL", category: "Languages", order: 9, showInHero: false },
+    { id: "10", name: "React.js", category: "Frameworks", order: 10, showInHero: true },
+    { id: "11", name: "ASP.NET Core", category: "Frameworks", order: 11, showInHero: true },
+    { id: "12", name: "Git", category: "Tools", order: 12, showInHero: false },
+    { id: "13", name: "EF Core", category: "Tools", order: 13, showInHero: false },
+    { id: "14", name: "LLMs", category: "Technologies", order: 14, showInHero: false },
   ] as Skill[],
   experience: [
-    { id: "1", type: "work" as const, role: "Software Engineering Intern", org: "Xocialive", period: "Sep 2024 – Jan 2025", description: "• Developed and maintained web applications using React.JS, ASP.NET Core, and MS SQL Server.\n• Assisted in backend development, optimizing database queries for improved performance.\n• Collaborated with a team to enhance UI/UX for a seamless user experience.", tags: "React.JS, ASP.NET Core, MS SQL Server, C#" },
-    { id: "2", type: "education" as const, role: "B.S. Computer Science", org: "Zarqa University", period: "Jan 2021 – Jan 2024", description: "Studied algorithms, data structures, software engineering, and computer networks. GPA: 76.1%", tags: "GPA: 76.1%, Computer Science" },
-  ] as ExperienceItem[],
+    { id: "1", position: "Software Engineering Intern", company: "Xocialive", startDate: "2024-09-01", endDate: "2025-01-31", description: "• Developed and maintained web applications using React.JS, ASP.NET Core, and MS SQL Server.\n• Assisted in backend development, optimizing database queries for improved performance.\n• Collaborated with a team to enhance UI/UX for a seamless user experience.", current: false },
+  ] as Experience[],
+  education: [
+    { id: "1", degree: "B.S. Computer Science", school: "Zarqa University", startDate: "2021-01-01", endDate: "2024-01-01", description: "GPA: 76.1% — Studied algorithms, data structures, software engineering, and computer networks." },
+  ] as Education[],
   messages: [
-    { id: "1", name: "Sample Visitor", email: "visitor@example.com", subject: "Job Opportunity", message: "Hi Yazan, I came across your portfolio and was really impressed. We have a full-stack role that might be a great fit.", date: "2025-05-15", read: false },
-  ] as Message[],
+    { id: "1", name: "Sample Visitor", email: "visitor@example.com", subject: "Job Opportunity", message: "Hi Yazan, I came across your portfolio and was really impressed. We have a full-stack role that might be a great fit.", isRead: false, createdAt: "2025-05-15" },
+  ] as ContactMessage[],
+  testimonials: [] as Testimonial[],
+  blog: [] as BlogPost[],
+  stats: { yearsExperience: 2, projectsCompleted: 5, technologiesMastered: 20, githubContributions: 0 } as SiteStats,
+  availability: { isAvailable: true, status: "Open to opportunities", message: "Available for full-time roles and freelance projects." } as AvailabilityStatus,
 };
 
 function getKey(key: string) { return `yz_admin_${key}`; }
 
-function load<T>(key: string, fallback: T[]): T[] {
-  try {
-    const raw = localStorage.getItem(getKey(key));
-    return raw ? JSON.parse(raw) : fallback;
-  } catch { return fallback; }
+function loadArr<T>(key: string, fallback: T[]): T[] {
+  try { const raw = localStorage.getItem(getKey(key)); return raw ? JSON.parse(raw) : fallback; }
+  catch { return fallback; }
 }
-
-function save<T>(key: string, data: T[]) {
-  localStorage.setItem(getKey(key), JSON.stringify(data));
+function loadObj<T>(key: string, fallback: T): T {
+  try { const raw = localStorage.getItem(getKey(key)); return raw ? JSON.parse(raw) : fallback; }
+  catch { return fallback; }
 }
+function save<T>(key: string, data: T) { localStorage.setItem(getKey(key), JSON.stringify(data)); }
 
 export const store = {
-  getProjects: () => load<Project>("projects", DEFAULTS.projects),
-  saveProjects: (data: Project[]) => save("projects", data),
-  getSkills: () => load<Skill>("skills", DEFAULTS.skills),
-  saveSkills: (data: Skill[]) => save("skills", data),
-  getExperience: () => load<ExperienceItem>("experience", DEFAULTS.experience),
-  saveExperience: (data: ExperienceItem[]) => save("experience", data),
-  getMessages: () => load<Message>("messages", DEFAULTS.messages),
-  saveMessages: (data: Message[]) => save("messages", data),
+  getProjects: () => loadArr<Project>("projects", DEFAULTS.projects),
+  saveProjects: (d: Project[]) => save("projects", d),
+  getSkills: () => loadArr<Skill>("skills", DEFAULTS.skills),
+  saveSkills: (d: Skill[]) => save("skills", d),
+  getExperience: () => loadArr<Experience>("experience", DEFAULTS.experience),
+  saveExperience: (d: Experience[]) => save("experience", d),
+  getEducation: () => loadArr<Education>("education", DEFAULTS.education),
+  saveEducation: (d: Education[]) => save("education", d),
+  getMessages: () => loadArr<ContactMessage>("messages", DEFAULTS.messages),
+  saveMessages: (d: ContactMessage[]) => save("messages", d),
+  getTestimonials: () => loadArr<Testimonial>("testimonials", DEFAULTS.testimonials),
+  saveTestimonials: (d: Testimonial[]) => save("testimonials", d),
+  getBlog: () => loadArr<BlogPost>("blog", DEFAULTS.blog),
+  saveBlog: (d: BlogPost[]) => save("blog", d),
+  getStats: () => loadObj<SiteStats>("stats", DEFAULTS.stats),
+  saveStats: (d: SiteStats) => save("stats", d),
+  getAvailability: () => loadObj<AvailabilityStatus>("availability", DEFAULTS.availability),
+  saveAvailability: (d: AvailabilityStatus) => save("availability", d),
 };
