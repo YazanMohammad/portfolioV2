@@ -19,11 +19,11 @@ export default function AdminLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    if (login(password)) {
+    const success = await login(password);
+    if (success) {
       setLocation("/admin/dashboard");
     } else {
-      setError("Invalid password. Try: admin123");
+      setError("Invalid password");
       setLoading(false);
     }
   };
@@ -45,8 +45,12 @@ export default function AdminLogin() {
           <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4">
             <Terminal size={24} className="text-primary" />
           </div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Admin Panel</h1>
-          <p className="text-sm text-muted-foreground mt-1">yz.dev — Yazan Mohammad</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">
+            Admin Panel
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            yz.dev — Yazan Mohammad
+          </p>
         </div>
 
         <form
@@ -102,7 +106,9 @@ export default function AdminLogin() {
                 <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                 Signing in...
               </span>
-            ) : "Sign In"}
+            ) : (
+              "Sign In"
+            )}
           </button>
 
           <p className="text-center text-xs text-muted-foreground mt-4 font-mono">

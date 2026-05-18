@@ -1,12 +1,24 @@
 const AUTH_KEY = "yz_admin_auth";
-const ADMIN_PASSWORD = "admin123";
 
-export function login(password: string): boolean {
-  if (password === ADMIN_PASSWORD) {
-    localStorage.setItem(AUTH_KEY, "true");
-    return true;
+export async function login(password: string): Promise<boolean> {
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem(AUTH_KEY, "true");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Login failed:", error);
+    return false;
   }
-  return false;
 }
 
 export function logout() {
