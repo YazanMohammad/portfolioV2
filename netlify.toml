@@ -6,6 +6,7 @@
   NODE_VERSION = "20"
   PORT         = "3000"
   BASE_PATH    = "/"
+  PNPM_FLAGS   = "--no-frozen-lockfile"
 
 [[redirects]]
   from   = "/*"
