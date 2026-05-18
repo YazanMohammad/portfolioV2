@@ -42,7 +42,7 @@ On the build settings screen, enter the following:
 | Field | Value |
 |---|---|
 | **Base directory** | *(leave blank)* |
-| **Build command** | `corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile && PORT=3000 BASE_PATH=/ pnpm --filter @workspace/portfolio run build` |
+| **Build command** | `pnpm install && PORT=3000 BASE_PATH=/ pnpm --filter @workspace/portfolio run build` |
 | **Publish directory** | `artifacts/portfolio/dist/public` |
 
 > The `netlify.toml` file already included in this repo fills these in automatically — you may not need to type them at all.
