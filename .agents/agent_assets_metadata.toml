@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "ft5uY4AFtl-z1oD7bz9nK"
+uri = "file://NETLIFY_DEPLOY.md"
+type = "text"
+title = "Netlify Deployment Guide"
